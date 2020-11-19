@@ -1,0 +1,112 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+
+<h2>Index</h2>
+<script src="~/Scripts/jquery-3.4.1.min.js"></script>
+<script src="~/Scripts/jquery.validate.min.js"></script>
+<script src="~/Scripts/jquery-ui-1.10.2.min.js"></script>
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+
+    });
+
+    function LoadImage(input) {
+        if (input.files && input.files[0]) {
+            var reder = new FileReader();
+            reder.onload = function (e) {
+                $("#targetimage").attr("src", e.target.result);
+            };
+            reder.readAsDataURL(input.files[0]);
+            $("#targetimage").show();
+            $("#btnDelete").show();
+
+        }
+    }
+
+    function ResetImage() {
+        $("#btnImageBrowser").val('');
+        $("#targetimage").hide();
+        $("#btnDelete").hide();
+        $("#txtdescrption").val('');
+
+    }
+
+    function SaveImage() {
+        var file = $("#btnImageBrowser").get(0).files;
+        var data = new FormData();
+        data.append("ImageDesc", $("#txtdescrption").val());
+        data.append("FileImage", file[0]);
+        $.ajax({
+            async: true,
+            type: "POST",
+            dataType: "JSON",
+            url: "/Home/Index",
+            data: data,
+            processData: false,
+            contentType: false,
+            success: function (data) {
+                if (data.success) {
+                    alert(data.message);
+                    ResetImage();
+                }
+            },
+            error: function (data) {
+                alert(data)
+            }
+        });
+    }
+</script>
+
+
+<table>
+    <tr>
+        <td>
+            Select Image
+        </td>
+        <td>
+            <input type="file" id="btnImageBrowser" class="btn" onchange="LoadImage(this)" />
+        </td>
+    </tr>
+
+    <tr>
+        <td>Description</td>
+        <td>
+            <input type="text" id="txtdescrption" name="Description" />
+        </td>
+    </tr>
+    <tr>
+    </tr>
+
+    <tr>
+        <td>Image Preview</td>
+        <td>
+            <img src="#" class="img-responsive" id="targetimage" width="100" height="100" style="display:none" />
+        </td>
+    </tr>
+    <tr>
+    </tr>
+
+
+    <tr>
+    </tr>
+
+    <tr>
+        <td></td>
+        <td>
+            <input type="button" value="Save Image" name="SaveImage" class="btn btn-success" onclick="SaveImage()" />
+        </td>
+
+    </tr>
+    <tr>
+    </tr>
+
+    <tr>
+        <td></td>
+        <td>
+            <input type="button" id="btnDelete" style="display:none" value="Delete" name="DeleteImage" class="btn btn-danger" onclick="ResetImage()" />
+        </td>
+    </tr>
+</table>
